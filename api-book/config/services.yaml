@@ -1,12 +1,7 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
 services:
-    # default configuration for services in *this* file
+    # Default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
@@ -20,5 +15,27 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # Explicit service definition for the default messenger bus, make it public
+    Symfony\Component\Messenger\MessageBusInterface:
+        class: Symfony\Component\Messenger\MessageBus
+        public: true
+        arguments:
+            - '@messenger.senders_locator'
+            - '@messenger.receiver_locator'
+
+    # Register the DispatchBookFetchJobCommand class as a service
+    App\Command\DispatchBookFetchJobCommand:
+        arguments:
+            $bus: '@messenger.default_bus'  # Automatically inject the message bus service
+
+    # Register the BookFetchJobHandler as a message handler
+    App\MessageHandler\BookFetchJobHandler:
+        tags: ['messenger.message_handler']  # Tells Symfony this is a handler for Messenger messages
+
+    # Optional: Explicitly define other messenger buses if needed
+    # Symfony\Component\Messenger\MessageBusInterface: '@messenger.bus.some_other_bus'
+
+    # You can add additional service definitions if needed.
+
+
+

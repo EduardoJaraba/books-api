@@ -1,0 +1,18 @@
+# config/packages/nelmio_api_doc.yaml
+nelmio_api_doc:
+    documentation:
+        info:
+            title: 'Book API'
+            description: 'A simple API to search for books by title, ISBN, or author'
+            version: '1.0.0'
+        paths:
+            # Optionally specify which paths should be included in the documentation
+            # If left empty, all routes are documented by default
+            # /api/v1/books is added by default in the controller below
+        components:
+            securitySchemes:
+                BearerAuth:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+
